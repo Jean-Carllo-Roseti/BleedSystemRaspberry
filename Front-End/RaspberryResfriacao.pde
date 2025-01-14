@@ -1,0 +1,383 @@
+import java.text.SimpleDateFormat; // Para formatação de data
+import java.util.Date; // Para obter a data atual
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+
+
+String mensagem = ""; // Variável para armazenar a mensagem de sucesso
+int mensagemTimeout = 0; // Tempo restante para exibir a mensagem
+
+PImage img;
+long lastUpdateTime = 0; // Tempo da última atualização
+int updateInterval = 2100;  // Intervalo para atualizar as imagens (1 segundo)
+
+
+String[] palavras = {"Fire Wall", "FCV", "Mixer", "Cabin Sov", "Inline Rellied Valve"};
+PVector[] posicoes;
+
+String caminhoImagem1 = "/home/avionics/Desktop/BleedSystemRaspberry/assets/images/BleedSystem.png";
+
+long lastReadDataTime = 0; // Tempo da última execução da função readDataFromFile PARA DADOS REAIS
+int readDataInterval = 2000; // Intervalo para chamar a função (5 segundos, por exemplo)
+
+float[] temperatures = new float[16]; // Array para armazenar temperaturas
+float[] pressures = new float[8]; // Array para armazenar pressões
+
+String userInput1 = "";
+String userInput2 = "";
+String userInput3 = "";
+String userInput4 = "";
+String userInput5 = "";
+String userInput6 = "";
+int currentInput = 0; // Para rastrear qual input está ativo
+
+void setup() {
+  fullScreen();  // Define o tamanho da tela para tela cheia
+
+  // Carregar as imagens inicialmente
+  img = loadImage(caminhoImagem1);
+
+  lastUpdateTime = millis(); // Armazena o tempo inicial de execução
+  readDataFromFile();
+  
+  posicoes = new PVector[]{
+      new PVector(width * 0.1325, height * 0.63),  // FireWall
+      new PVector(width * 0.223, height * 0.34),  // FCV
+      new PVector(width * 0.57, height * 0.57), // Mixer 
+      new PVector(width * 0.698, height * 0.63), // Cabin Sov
+      new PVector(width * 0.78, height * 0.56), // Inline Rellied Valve
+      
+      
+      new PVector(width * 0.77, height * 0.85),  // Data
+      new PVector(width * 0.77, height * 0.875)  // Hora
+  };
+}
+
+void draw() {
+  background(255);  // Limpa a tela com fundo branco
+
+  // Verifica se passou o tempo do intervalo para atualizar as imagens
+  // Desenha as imagens
+    image(img, width * 0.02, height * 0.03, width * 0.97, height * 0.9);  // Imagem 4 (não atualiza automaticamente, permanece fixa)
+   
+      //BOX1
+    drawSensorCircle("P1", pressures[1], width * 0.28, height * 0.77);
+    drawSensorCircle("P2", pressures[2], width * 0.28, height * 0.55);
+    drawSensorCircle("P3", pressures[3], width * 0.56, height * 0.34);
+    drawSensorCircle("P4", pressures[4], width * 0.56, height * 0.73);
+
+
+    drawSensorCircleTemp("T1", temperatures[0], width * 0.15, height * 0.77);
+    drawSensorCircleTemp("T2", temperatures[1], width * 0.3, height * 0.48);
+    drawSensorCircleTemp("T3", temperatures[2], width * 0.37, height * 0.34);
+    drawSensorCircleTemp("T4", temperatures[3], width * 0.56, height * 0.68);
+    drawSensorCircleTemp("AIR", temperatures[4], width * 0.147, height * 0.4);
+  
+    drawTextInput(userInput1, width * 0.1, height * 0.65, "SN"); //FireWall
+    drawTextInput(userInput2, width * 0.18, height * 0.36, "SN"); //FCV
+    drawTextInput(userInput3, width * 0.54, height * 0.59, "SN"); //Mixer
+    drawTextInput(userInput4, width * 0.55, height * 0.86, "SN"); //Cabin Sov
+    drawTextInput(userInput5, width * 0.68, height * 0.65, "SN"); //Cabin Sov
+    drawTextInput(userInput6, width * 0.78, height * 0.58, "SN"); //Inline Rellied Valve
+
+  
+  if (millis() - lastReadDataTime > readDataInterval) {
+    readDataFromFile(); // Chama a função para ler os dados do arquivo
+    lastReadDataTime = millis(); // Atualiza o tempo de última execução
+  }
+  
+  if (mensagemTimeout > 0) {
+    pushStyle(); // Salva o estilo atual
+    fill(0, 255, 0);
+    textSize(20);
+    textAlign(RIGHT, TOP);
+    text(mensagem, width - 10, 10);
+    popStyle(); // Restaura o estilo anterior
+    mensagemTimeout--;
+}
+  
+  drawPalavras();
+  drawSaveButton();
+  
+}
+
+void drawTextInput(String inputText, float x, float y, String label) {
+  float inputWidth = width * 0.12;  // Largura do campo de texto (exemplo proporcional)
+  float inputHeight = height * 0.025; // Altura do campo de texto (exemplo proporcional)
+
+  fill(200); // Cor de fundo do campo de texto
+  rect(x, y, inputWidth, inputHeight); // Desenha o retângulo do campo de texto
+
+  fill(0); // Cor do texto (preto)
+  textSize(16);
+  textAlign(LEFT, CENTER);
+  text(label + ": " + inputText, x + 5, y + inputHeight / 2); // Texto de entrada, centralizado verticalmente
+}
+
+
+void drawPalavras() {
+  fill(0); // Cor do texto
+  textSize(20); // Tamanho da fonte
+  
+  // Desenha cada palavra na posição correspondente
+  for (int i = 0; i < palavras.length; i++) {
+    text(palavras[i], posicoes[i].x, posicoes[i].y);
+  }
+  
+    String dataAtual = getCurrentDate();
+    String horaAtual = getCurrentTime();
+  
+    // Desenha a data ao lado do campo "Data:"
+  text(dataAtual, posicoes[5].x + 40, posicoes[5].y); // Ajuste a posição conforme necessário
+
+  // Desenha a hora ao lado do campo "Hora:"
+  text(horaAtual, posicoes[6].x + 40, posicoes[6].y); // Ajuste a posição conforme necessário
+}
+
+// Função para obter a data atual
+String getCurrentDate() {
+  SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+  Date date = new Date();
+  return dateFormat.format(date);
+}
+
+// Função para obter a hora atual
+String getCurrentTime() {
+  SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+  Date time = new Date();
+  return timeFormat.format(time);
+}
+
+void drawSensorCircle(String label, float sensorValue, float x, float y) {
+  fill(0); // Cor do círculo
+  ellipse(x, y, 24, 24); // Desenha o círculo
+
+  fill(255); // Cor do texto (branco)
+  textSize(16);
+  textAlign(CENTER, CENTER);
+  text(label, x, y); // Desenha a letra maiúscula no centro do círculo
+
+  // Desenha o valor ao lado do círculo
+  fill(0); // Cor do texto (preto)
+  textSize(16);
+  textAlign(LEFT, CENTER);
+  text(nf(sensorValue, 0, 2) + " PSI", x + 20, y); // Desenha o valor ao lado
+}
+
+void drawSensorCircleTemp(String label, float sensorValue, float x, float y) {
+  fill(0); // Cor do círculo
+  ellipse(x, y, 24, 24); // Desenha o círculo
+
+  fill(255); // Cor do texto (branco)
+  textSize(16);
+  textAlign(CENTER, CENTER);
+  text(label, x, y); // Desenha a letra maiúscula no centro do círculo
+
+  // Desenha o valor ao lado do círculo
+  fill(0); // Cor do texto (preto)
+  textSize(16);
+  textAlign(LEFT, CENTER);
+  text(nf(sensorValue, 0, 2) + " °C", x + 20, y); // Desenha o valor ao lado
+}
+
+void drawSaveButton() {
+  fill(0, 200, 0); // Cor do botão (verde)
+  rect(width * 0.73, height * 0.845, width * 0.07, height * 0.035); // Nova posição do botão em (900, 50)
+  fill(255); // Cor do texto (branco)
+  textSize(16);
+  textAlign(CENTER, CENTER);
+  text("Save", width * 0.763, height * 0.86); // Texto centralizado no botão
+}
+
+// Função para detectar a interação do mouse
+void mousePressed() {
+  // Calcula as dimensões do botão "Save" dinamicamente
+  float saveX = width * 0.73;         // Coordenada X inicial do botão
+  float saveY = height * 0.845;       // Coordenada Y inicial do botão
+  float saveWidth = width * 0.07;     // Largura do botão
+  float saveHeight = height * 0.035;  // Altura do botão
+  
+  // Coordenadas e tamanhos dos campos de entrada
+  float inputWidth = width * 0.12;    // Largura do campo de texto
+  float inputHeight = height * 0.025; // Altura do campo de texto
+
+  float inputX1 = width * 0.1;     // Coordenada X do campo 1
+  float inputY1 = height * 0.65;     // Coordenada Y do campo 1
+
+  float inputX2 = width * 0.18;      // Coordenada X do campo 2
+  float inputY2 = height * 0.36;     // Coordenada Y do campo 2
+
+  float inputX3 = width * 0.54;     // Coordenada X do campo 3
+  float inputY3 = height * 0.59;    // Coordenada Y do campo 3
+
+  float inputX4 = width * 0.55;     // Coordenada X do campo 4
+  float inputY4 = height * 0.86;    // Coordenada Y do campo 4
+
+  float inputX5 = width * 0.68;      // Coordenada X do campo 5
+  float inputY5 = height * 0.65;      // Coordenada Y do campo 5
+
+  float inputX6 = width * 0.78;       // Coordenada X do campo 6
+  float inputY6 = height * 0.58;    // Coordenada Y do campo 6
+
+  // Verifica se o clique foi dentro do botão "Save"
+  if (mouseX > saveX && mouseX < saveX + saveWidth &&
+      mouseY > saveY && mouseY < saveY + saveHeight) {
+    saveWithTimestamp(); // Chama a função de salvar
+  }
+
+  // Detecta qual campo de entrada foi clicado
+  if (mouseX > inputX1 && mouseX < inputX1 + inputWidth &&
+      mouseY > inputY1 && mouseY < inputY1 + inputHeight) {
+    currentInput = 0; // Campo userInput1
+  } else if (mouseX > inputX2 && mouseX < inputX2 + inputWidth &&
+             mouseY > inputY2 && mouseY < inputY2 + inputHeight) {
+    currentInput = 1; // Campo userInput2
+  } else if (mouseX > inputX3 && mouseX < inputX3 + inputWidth &&
+             mouseY > inputY3 && mouseY < inputY3 + inputHeight) {
+    currentInput = 2; // Campo userInput3
+  } else if (mouseX > inputX4 && mouseX < inputX4 + inputWidth &&
+             mouseY > inputY4 && mouseY < inputY4 + inputHeight) {
+    currentInput = 3; // Campo userInput4
+  } else if (mouseX > inputX5 && mouseX < inputX5 + inputWidth &&
+             mouseY > inputY5 && mouseY < inputY5 + inputHeight) {
+    currentInput = 4; // Campo userInput5
+  } else if (mouseX > inputX6 && mouseX < inputX6 + inputWidth &&
+             mouseY > inputY6 && mouseY < inputY6 + inputHeight) {
+    currentInput = 5; // Campo userInput6
+  }
+}
+
+
+void keyPressed() {
+  // Remoção de caracteres com BACKSPACE
+  if (key == BACKSPACE) {
+    if (currentInput == 0 && userInput1.length() > 0) {
+      userInput1 = userInput1.substring(0, userInput1.length() - 1);
+    } else if (currentInput == 1 && userInput2.length() > 0) {
+      userInput2 = userInput2.substring(0, userInput2.length() - 1);
+    } else if (currentInput == 2 && userInput3.length() > 0) {
+      userInput3 = userInput3.substring(0, userInput3.length() - 1);
+    } else if (currentInput == 3 && userInput4.length() > 0) {
+      userInput4 = userInput4.substring(0, userInput4.length() - 1);
+    } else if (currentInput == 4 && userInput5.length() > 0) {
+      userInput5 = userInput5.substring(0, userInput5.length() - 1);
+    } else if (currentInput == 5 && userInput6.length() > 0) {
+      userInput6 = userInput6.substring(0, userInput6.length() - 1);
+    } 
+  }
+  // Adiciona caracteres quando não é BACKSPACE, ENTER ou TAB
+  else if (key != ENTER && key != TAB) {
+    if (currentInput == 0 && userInput1.length() < 15) {
+      userInput1 += key;
+    } else if (currentInput == 1 && userInput2.length() < 15) {
+      userInput2 += key;
+    } else if (currentInput == 2 && userInput3.length() < 15) {
+      userInput3 += key;
+    } else if (currentInput == 3 && userInput4.length() < 15) {
+      userInput4 += key;
+    } else if (currentInput == 4 && userInput3.length() < 15) {
+      userInput5 += key;
+    } else if (currentInput == 5 && userInput4.length() < 15) {
+      userInput6 += key;
+    }
+  }
+}
+
+//bom, alterar apenas para tirar a foto da malha
+void saveWithTimestamp() {
+  // Gera o timestamp para criar uma pasta única
+  String timestamp = new SimpleDateFormat("yyyy_MM_dd_HH-mm-ss").format(new Date());
+  String folderPath = "/home/avionics/Desktop/BleedSystemRaspberry/ScrenShots/Registros/" + timestamp;
+  new File(folderPath).mkdir(); // Cria a pasta com o timestamp
+
+  // Salvando cada imagem com sua legenda
+  save(folderPath + "/BleedMalha.png");
+
+  println("Imagens salvas com legendas em: " + folderPath);
+  mensagem = "Imagens geradas com sucesso.";
+  mensagemTimeout = 50; // Número de frames que a mensagem será exibida (ajuste conforme necessário)
+}
+/*
+
+void salvarImagemComLegenda(PImage img, String legenda, String caminhoSaida) {
+  // Adiciona o prefixo "SN: " à legenda
+  String legendaComPrefixo = "SN: " + legenda;
+
+  // Cria um novo canvas com a imagem e espaço extra para a legenda
+  PGraphics canvas = createGraphics(img.width, img.height + 30); // 30px para a legenda
+  canvas.beginDraw();
+
+  // Desenha a imagem no canvas
+  canvas.image(img, 0, 0); 
+
+  // Adiciona o fundo opaco para a legenda
+  canvas.fill(0); // Define a cor preta para o fundo
+  canvas.noStroke(); // Remove as bordas do retângulo
+  canvas.rect(0, img.height, img.width, 30); // Desenha um retângulo preto na área da legenda
+
+  // Adiciona a legenda por cima do fundo
+  canvas.fill(255); // Cor do texto (branco)
+  canvas.textSize(16);
+  canvas.textAlign(CENTER, CENTER);
+  canvas.text(legendaComPrefixo, img.width / 2, img.height + 15); // Legenda centralizada abaixo da imagem
+
+  canvas.endDraw();
+
+  // Salva a imagem com a legenda
+  canvas.save(caminhoSaida);
+}
+*/
+
+void readDataFromFile() {
+  String filePathP = "/home/avionics/Desktop/BleedSystemRaspberry/Back-End/dados_pressao.txt";
+  String filePathT = "/home/avionics/Desktop/BleedSystemRaspberry/Back-End/dados_temperatura.txt";
+
+  try {
+    // Cria BufferedReader para ambos os arquivos
+    BufferedReader readerP = new BufferedReader(new FileReader(filePathP));
+    BufferedReader readerT = new BufferedReader(new FileReader(filePathT));
+
+    String line;
+
+    // Lê todas as linhas de pressão
+    while ((line = readerP.readLine()) != null) {
+      String[] values = line.split(","); // Divide a linha em valores
+      for (int i = 0; i < values.length && i < pressures.length; i++) {
+        try {
+          pressures[i] = Float.parseFloat(values[i].trim()); // Converte para float
+          println("Pressão lida: " + pressures[i]); // Verifica o valor lido
+        } catch (NumberFormatException e) {
+          println("Erro ao converter a pressão na posição " + i + ": " + values[i]);
+        }
+      }
+    }
+
+    // Lê todas as linhas de temperatura
+    while ((line = readerT.readLine()) != null) {
+      String[] values = line.split(","); // Divide a linha em valores
+      for (int j = 0; j < values.length && j < temperatures.length; j++) {
+        try {
+          temperatures[j] = Float.parseFloat(values[j].trim()); // Converte para float
+          println("Temperatura lida: " + temperatures[j]); // Verifica o valor lido
+        } catch (NumberFormatException e) {
+          println("Erro ao converter a temperatura na posição " + j + ": " + values[j]);
+        }
+      }
+    }
+    
+    // Fecha os leitores
+    readerP.close();
+    readerT.close();
+    
+  } catch (IOException e) {
+    println("Erro ao ler o arquivo: " + e.getMessage());
+  }
+}

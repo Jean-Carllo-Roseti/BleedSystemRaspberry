@@ -14,8 +14,7 @@ CONFIGURACOES = {
         "file_name": "dados_pressao.txt",
         "tipo": "Pressão",
                 "formula": lambda valores: [
-            ((valor - 500) / (4500 - 500)) * 100 if i in [0, 4, 6, 8] else
-            ((valor - 500) / (4500 - 500)) * 500
+            ((valor - 500) / (4500 - 500)) * 100
             for i, valor in enumerate(valores)
         ]
     },
@@ -24,14 +23,6 @@ CONFIGURACOES = {
         "address": 32,
         "count": 16,
         "file_name": "dados_temperatura.txt",
-        "tipo": "Temperatura",
-        "formula": lambda valores: [(valor / 10) - 0.15 for valor in valores]
-    },
-    "temperatura2": {
-        "unit_id": 3,
-        "address": 32,
-        "count": 16,
-        "file_name": "dados_temperatura2.txt",
         "tipo": "Temperatura",
         "formula": lambda valores: [(valor / 10) - 0.15 for valor in valores]
     }
