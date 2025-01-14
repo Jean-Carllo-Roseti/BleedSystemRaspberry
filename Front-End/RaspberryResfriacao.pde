@@ -50,7 +50,7 @@ void setup() {
   
   posicoes = new PVector[]{
       new PVector(width * 0.1325, height * 0.63),  // FireWall
-      new PVector(width * 0.223, height * 0.34),  // FCV
+      new PVector(width * 0.223, height * 0.33),  // FCV
       new PVector(width * 0.57, height * 0.57), // Mixer 
       new PVector(width * 0.698, height * 0.63), // Cabin Sov
       new PVector(width * 0.78, height * 0.56), // Inline Rellied Valve
@@ -82,7 +82,7 @@ void draw() {
     drawSensorCircleTemp("AIR", temperatures[4], width * 0.147, height * 0.4);
   
     drawTextInput(userInput1, width * 0.1, height * 0.65, "SN"); //FireWall
-    drawTextInput(userInput2, width * 0.18, height * 0.36, "SN"); //FCV
+    drawTextInput(userInput2, width * 0.18, height * 0.35, "SN"); //FCV
     drawTextInput(userInput3, width * 0.54, height * 0.59, "SN"); //Mixer
     drawTextInput(userInput4, width * 0.55, height * 0.86, "SN"); //Cabin Sov
     drawTextInput(userInput5, width * 0.68, height * 0.65, "SN"); //Cabin Sov
@@ -157,36 +157,67 @@ String getCurrentTime() {
 }
 
 void drawSensorCircle(String label, float sensorValue, float x, float y) {
+  // Desenha o círculo preto
   fill(0); // Cor do círculo
   ellipse(x, y, 24, 24); // Desenha o círculo
 
+  // Texto da etiqueta dentro do círculo
   fill(255); // Cor do texto (branco)
   textSize(16);
   textAlign(CENTER, CENTER);
-  text(label, x, y); // Desenha a letra maiúscula no centro do círculo
+  text(label, x, y); // Desenha a letra no centro do círculo
 
-  // Desenha o valor ao lado do círculo
+  // Fundo retangular arredondado atrás do valor
+  float rectWidth = 80;   // Largura do retângulo
+  float rectHeight = 24;  // Altura do retângulo
+  float rectX = x + 20;   // Posição X do retângulo
+  float rectY = y - rectHeight / 2; // Posição Y (centraliza verticalmente)
+  float cornerRadius = 8; // Raio das bordas arredondadas
+
+  //fill(200, 200, 200, 150); // Cor de fundo do retângulo (cinza translúcido)
+  fill(255);
+  noStroke();               // Remove as bordas do retângulo
+  rect(rectX, rectY, rectWidth, rectHeight, cornerRadius); // Desenha o retângulo arredondado
+
+  // Texto do valor ao lado do círculo
   fill(0); // Cor do texto (preto)
   textSize(16);
   textAlign(LEFT, CENTER);
-  text(nf(sensorValue, 0, 2) + " PSI", x + 20, y); // Desenha o valor ao lado
+  text(nf(sensorValue, 0, 2) + " °C", rectX + 5, y); // Desenha o valor dentro do fundo
+
 }
 
 void drawSensorCircleTemp(String label, float sensorValue, float x, float y) {
+  // Desenha o círculo preto
   fill(0); // Cor do círculo
   ellipse(x, y, 24, 24); // Desenha o círculo
 
+  // Texto da etiqueta dentro do círculo
   fill(255); // Cor do texto (branco)
   textSize(16);
   textAlign(CENTER, CENTER);
-  text(label, x, y); // Desenha a letra maiúscula no centro do círculo
+  text(label, x, y); // Desenha a letra no centro do círculo
 
-  // Desenha o valor ao lado do círculo
+  // Fundo retangular arredondado atrás do valor
+  float rectWidth = 80;   // Largura do retângulo
+  float rectHeight = 24;  // Altura do retângulo
+  float rectX = x + 20;   // Posição X do retângulo
+  float rectY = y - rectHeight / 2; // Posição Y (centraliza verticalmente)
+  float cornerRadius = 8; // Raio das bordas arredondadas
+
+  //fill(200, 200, 200, 150); // Cor de fundo do retângulo (cinza translúcido)
+  fill(255);
+  noStroke();               // Remove as bordas do retângulo
+  rect(rectX, rectY, rectWidth, rectHeight, cornerRadius); // Desenha o retângulo arredondado
+
+  // Texto do valor ao lado do círculo
   fill(0); // Cor do texto (preto)
   textSize(16);
   textAlign(LEFT, CENTER);
-  text(nf(sensorValue, 0, 2) + " °C", x + 20, y); // Desenha o valor ao lado
+  text(nf(sensorValue, 0, 2) + " °C", rectX + 5, y); // Desenha o valor dentro do fundo
+
 }
+
 
 void drawSaveButton() {
   fill(0, 200, 0); // Cor do botão (verde)
@@ -212,8 +243,8 @@ void mousePressed() {
   float inputX1 = width * 0.1;     // Coordenada X do campo 1
   float inputY1 = height * 0.65;     // Coordenada Y do campo 1
 
-  float inputX2 = width * 0.18;      // Coordenada X do campo 2
-  float inputY2 = height * 0.36;     // Coordenada Y do campo 2
+  float inputX2 = width * 0.18;      // Coordenada X do campo 2 
+  float inputY2 = height * 0.35;     // Coordenada Y do campo 2
 
   float inputX3 = width * 0.54;     // Coordenada X do campo 3
   float inputY3 = height * 0.59;    // Coordenada Y do campo 3
