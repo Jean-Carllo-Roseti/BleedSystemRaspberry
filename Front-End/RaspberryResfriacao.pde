@@ -368,8 +368,8 @@ void salvarImagemComLegenda(PImage img, String legenda, String caminhoSaida) {
 */
 
 void readDataFromFile() {
-  String filePathP = "/home/avionics/Desktop/BleedSystemRaspberry/Back-End/dados_pressao.txt";
-  String filePathT = "/home/avionics/Desktop/BleedSystemRaspberry/Back-End/dados_temperatura.txt";
+  String filePathP = "/home/avionics/Desktop/BleedSystemRaspberry/Back-End/dist/dados_pressao.txt";
+  String filePathT = "/home/avionics/Desktop/BleedSystemRaspberry/Back-End/dist/dados_temperatura.txt";
 
   try {
     // Cria BufferedReader para ambos os arquivos
