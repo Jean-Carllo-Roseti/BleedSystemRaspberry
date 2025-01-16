@@ -69,10 +69,10 @@ void draw() {
     image(img, width * 0.02, height * 0.03, width * 0.97, height * 0.9);  // Imagem 4 (não atualiza automaticamente, permanece fixa)
    
       //BOX1
-    drawSensorCircle("P1", pressures[1], width * 0.28, height * 0.77);
-    drawSensorCircle("P2", pressures[2], width * 0.28, height * 0.55);
-    drawSensorCircle("P3", pressures[3], width * 0.56, height * 0.34);
-    drawSensorCircle("P4", pressures[4], width * 0.56, height * 0.73);
+    drawSensorCircle("P1", pressures[0], width * 0.28, height * 0.77);
+    drawSensorCircle("P2", pressures[1], width * 0.28, height * 0.55);
+    drawSensorCircle("P3", pressures[2], width * 0.56, height * 0.34);
+    drawSensorCircle("P4", pressures[3], width * 0.56, height * 0.73);
 
 
     drawSensorCircleTemp("T1", temperatures[0], width * 0.15, height * 0.77);
@@ -368,8 +368,8 @@ void salvarImagemComLegenda(PImage img, String legenda, String caminhoSaida) {
 */
 
 void readDataFromFile() {
-  String filePathP = "/home/avionics/Desktop/BleedSystemRaspberry/Back-End/dist/dados_pressao.txt";
-  String filePathT = "/home/avionics/Desktop/BleedSystemRaspberry/Back-End/dist/dados_temperatura.txt";
+  String filePathP = "/home/avionics/Desktop/BleedSystemRaspberry/Back-End/dados_pressao.txt";
+  String filePathT = "/home/avionics/Desktop/BleedSystemRaspberry/Back-End/dados_temperatura.txt";
 
   try {
     // Cria BufferedReader para ambos os arquivos
