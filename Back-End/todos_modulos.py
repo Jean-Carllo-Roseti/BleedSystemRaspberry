@@ -4,6 +4,9 @@ import signal
 import sys
 import threading
 
+# Caminho absoluto dos arquivos
+CAMINHO_BASE = "/home/avionics/Desktop/BleedSystemRaspberry/Back-End/"
+
 # Configurações dos dispositivos e arquivos
 CONFIGURACOES = {
     "pressao": {
@@ -11,9 +14,9 @@ CONFIGURACOES = {
         "address": 0,
         "count": 8,
         "factor": 10,  # Fator de escala da pressão
-        "file_name": "dados_pressao.txt",
+        "file_name": f"{CAMINHO_BASE}dados_pressao.txt",  # Caminho absoluto
         "tipo": "Pressão",
-                "formula": lambda valores: [
+        "formula": lambda valores: [
             ((valor - 500) / (4500 - 500)) * 100
             for i, valor in enumerate(valores)
         ]
@@ -22,7 +25,7 @@ CONFIGURACOES = {
         "unit_id": 2,
         "address": 32,
         "count": 16,
-        "file_name": "dados_temperatura.txt",
+        "file_name": f"{CAMINHO_BASE}dados_temperatura.txt",  # Caminho absoluto
         "tipo": "Temperatura",
         "formula": lambda valores: [(valor / 10) - 0.15 for valor in valores]
     }
@@ -37,12 +40,13 @@ TIMEOUT = 1  # Tempo de espera para resposta
 serial_lock = threading.Lock()
 
 
-# Funções auxiliares
+# Função para escrever no arquivo com caminho absoluto
 def escrever_em_arquivo(nome_arquivo, valores):
-    """Escreve os valores em um arquivo .txt, separados por vírgulas."""
+    """Escreve os valores no arquivo definido em CONFIGURACOES"""
     try:
         with open(nome_arquivo, "w") as f:
             f.write(",".join(f"{valor:.2f}" for valor in valores))
+        print(f"Dados escritos com sucesso em {nome_arquivo}")  # Log de verificação
     except IOError as e:
         print(f"Erro ao escrever no arquivo {nome_arquivo}: {e}")
 
@@ -89,7 +93,6 @@ def monitorar_dispositivo(client, config):
         time.sleep(1)
 
 
-
 # Tratamento de interrupção (Ctrl+C)
 def signal_handler(sig, frame):
     print('\nInterrupção detectada. Fechando conexão...')
@@ -108,7 +111,6 @@ client = ModbusSerialClient(
     stopbits=1,
     bytesize=8
 )
-
 
 # Conexão ao dispositivo
 if client.connect():
