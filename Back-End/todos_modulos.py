@@ -4,6 +4,9 @@ import signal
 import sys
 import threading
 
+
+caminho_base = "/home/avionics/Refri/BleedSystemRaspberry/Back-End"
+
 # Configurações dos dispositivos e arquivos
 CONFIGURACOES = {
     "pressao": {
@@ -11,7 +14,7 @@ CONFIGURACOES = {
         "address": 0,
         "count": 8,
         "factor": 10,  # Fator de escala da pressão
-        "file_name": "dados_pressao.txt",
+        "file_name": f"{caminho_base}dados_pressao.txt",
         "tipo": "Pressão",
                 "formula": lambda valores: [
             ((valor - 500) / (4500 - 500)) * 100
@@ -22,7 +25,7 @@ CONFIGURACOES = {
         "unit_id": 2,
         "address": 32,
         "count": 16,
-        "file_name": "dados_temperatura.txt",
+        "file_name": f"{caminho_base}dados_temperatura.txt",
         "tipo": "Temperatura",
         "formula": lambda valores: [(valor / 10) - 0.15 for valor in valores]
     }
@@ -35,7 +38,6 @@ TIMEOUT = 1  # Tempo de espera para resposta
 
 # Lock para sincronizar o acesso à porta serial
 serial_lock = threading.Lock()
-
 
 # Funções auxiliares
 def escrever_em_arquivo(nome_arquivo, valores):

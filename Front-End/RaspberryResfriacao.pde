@@ -23,7 +23,7 @@ int updateInterval = 2100;  // Intervalo para atualizar as imagens (1 segundo)
 String[] palavras = {"Fire Wall", "FCV", "Mixer", "Cabin Sov", "Inline Rellied Valve"};
 PVector[] posicoes;
 
-String caminhoImagem1 = "/home/avionics/Desktop/BleedSystemRaspberry/assets/images/BleedSystem.png";
+String caminhoImagem1 = "/home/avionics/Refri/BleedSystemRaspberry/assets/images/BleedSystem.png";
 
 long lastReadDataTime = 0; // Tempo da última execução da função readDataFromFile PARA DADOS REAIS
 int readDataInterval = 2000; // Intervalo para chamar a função (5 segundos, por exemplo)
