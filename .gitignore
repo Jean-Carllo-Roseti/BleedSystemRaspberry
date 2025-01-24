@@ -1,1 +1,5 @@
 venv/
+Front-End/linux-aarch64/lib
+Front-End/linux-aarch64/java
+Front-End/linux-aarch64/source
+Back-End/build

@@ -326,7 +326,7 @@ void keyPressed() {
 void saveWithTimestamp() {
   // Gera o timestamp para criar uma pasta única
   String timestamp = new SimpleDateFormat("yyyy_MM_dd_HH-mm-ss").format(new Date());
-  String folderPath = "/home/avionics/Desktop/BleedSystemRaspberry/ScrenShots/Registros/" + timestamp;
+  String folderPath = "/home/avionics/Refri/BleedSystemRaspberry/ScrenShots/Registros/" + timestamp;
   new File(folderPath).mkdir(); // Cria a pasta com o timestamp
 
   // Salvando cada imagem com sua legenda
@@ -368,8 +368,8 @@ void salvarImagemComLegenda(PImage img, String legenda, String caminhoSaida) {
 */
 
 void readDataFromFile() {
-  String filePathP = "/home/avionics/Desktop/BleedSystemRaspberry/Back-End/dist/dados_pressao.txt";
-  String filePathT = "/home/avionics/Desktop/BleedSystemRaspberry/Back-End/dist/dados_temperatura.txt";
+  String filePathP = "/home/avionics/Refri/BleedSystemRaspberry/Back-End/dados_pressao.txt";
+  String filePathT = "/home/avionics/Refri/BleedSystemRaspberry/Back-End/dados_temperatura.txt";
 
   try {
     // Cria BufferedReader para ambos os arquivos
