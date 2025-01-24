@@ -10,3 +10,5 @@
 while inotifywait -e modify,move,create,delete /home/avionics/Refri/BleedSystemRaspberry/ScrenShots/Registros; do
     rsync -avz /home/avionics/Refri/BleedSystemRaspberry/ScrenShots/Registros /home/avionics/Desktop/RegistrosBleedS/
 done
+
+read -p "Pressione Enter para continuar..." 
