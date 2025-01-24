@@ -5,7 +5,7 @@ import sys
 import threading
 
 
-caminho_base = "/home/avionics/Refri/BleedSystemRaspberry/Back-End"
+caminho_base = "/home/avionics/Refri/BleedSystemRaspberry/Back-End/"
 
 # Configurações dos dispositivos e arquivos
 CONFIGURACOES = {
