@@ -69,15 +69,15 @@ void draw() {
     image(img, width * 0.02, height * 0.03, width * 0.97, height * 0.9);  // Imagem 4 (não atualiza automaticamente, permanece fixa)
    
       //BOX1
-    drawSensorCircle("P1", pressures[0], width * 0.28, height * 0.77);
-    drawSensorCircle("P2", pressures[1], width * 0.28, height * 0.55);
-    drawSensorCircle("P3", pressures[2], width * 0.56, height * 0.34);
+    drawSensorCircle("P1", pressures[0], width * 0.15, height * 0.77);
+    drawSensorCircle("P2", pressures[1], width * 0.3, height * 0.48);
+    drawSensorCircle("P3", pressures[2], width * 0.37, height * 0.34);
     drawSensorCircle("P4", pressures[3], width * 0.56, height * 0.73);
 
 
-    drawSensorCircleTemp("T1", temperatures[0], width * 0.15, height * 0.77);
-    drawSensorCircleTemp("T2", temperatures[1], width * 0.3, height * 0.48);
-    drawSensorCircleTemp("T3", temperatures[2], width * 0.37, height * 0.34);
+    drawSensorCircleTemp("T1", temperatures[0], width * 0.28, height * 0.77);
+    drawSensorCircleTemp("T2", temperatures[1], width * 0.28, height * 0.55);
+    drawSensorCircleTemp("T3", temperatures[2], width * 0.56, height * 0.34);
     drawSensorCircleTemp("T4", temperatures[3], width * 0.56, height * 0.68);
     drawSensorCircleTemp("AIR", temperatures[4], width * 0.147, height * 0.4);
   
@@ -170,7 +170,7 @@ void drawSensorCircle(String label, float sensorValue, float x, float y) {
   // Fundo retangular arredondado atrás do valor
   float rectWidth = 80;   // Largura do retângulo
   float rectHeight = 24;  // Altura do retângulo
-  float rectX = x + 20;   // Posição X do retângulo
+  float rectX = x + 12;   // Posição X do retângulo
   float rectY = y - rectHeight / 2; // Posição Y (centraliza verticalmente)
   float cornerRadius = 8; // Raio das bordas arredondadas
 
