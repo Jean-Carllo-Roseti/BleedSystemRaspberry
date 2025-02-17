@@ -23,7 +23,7 @@ int updateInterval = 2100;  // Intervalo para atualizar as imagens (1 segundo)
 String[] palavras = {"Fire Wall", "FCV", "Mixer", "Cabin Sov", "Inline Rellied Valve"};
 PVector[] posicoes;
 
-String caminhoImagem1 = "/home/avionics/Desktop/BleedSystemRaspberry/assets/images/BleedSystem.png";
+String caminhoImagem1 = "/home/avionics/Refri/BleedSystemRaspberry/assets/images/BleedSystem.png";
 
 long lastReadDataTime = 0; // Tempo da última execução da função readDataFromFile PARA DADOS REAIS
 int readDataInterval = 2000; // Intervalo para chamar a função (5 segundos, por exemplo)
@@ -326,7 +326,7 @@ void keyPressed() {
 void saveWithTimestamp() {
   // Gera o timestamp para criar uma pasta única
   String timestamp = new SimpleDateFormat("yyyy_MM_dd_HH-mm-ss").format(new Date());
-  String folderPath = "/home/avionics/Desktop/BleedSystemRaspberry/ScrenShots/Registros/" + timestamp;
+  String folderPath = "/home/avionics/Refri/BleedSystemRaspberry/ScrenShots/Registros/" + timestamp;
   new File(folderPath).mkdir(); // Cria a pasta com o timestamp
 
   // Salvando cada imagem com sua legenda
@@ -368,8 +368,8 @@ void salvarImagemComLegenda(PImage img, String legenda, String caminhoSaida) {
 */
 
 void readDataFromFile() {
-  String filePathP = "/home/avionics/Desktop/BleedSystemRaspberry/Back-End/dados_pressao.txt";
-  String filePathT = "/home/avionics/Desktop/BleedSystemRaspberry/Back-End/dados_temperatura.txt";
+  String filePathP = "/home/avionics/Refri/BleedSystemRaspberry/Back-End/dados_pressao.txt";
+  String filePathT = "/home/avionics/Refri/BleedSystemRaspberry/Back-End/dados_temperatura.txt";
 
   try {
     // Cria BufferedReader para ambos os arquivos
